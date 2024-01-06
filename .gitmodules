@@ -1,3 +1,4 @@
 [submodule "tb/task/riscv_tests/resources/riscv-tests"]
 	path = tb/task/riscv_tests/resources/riscv-tests
 	url = https://github.com/riscv-software-src/riscv-tests.git
+	ignore = dirty
