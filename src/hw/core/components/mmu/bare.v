@@ -26,7 +26,7 @@ module mmu
         // ハザード
         input wire          MEM_WAIT,
 
-        /* ----- Core->MMU 接続 (物理アドレス or 仮想アドレス) ----- */
+        /* ----- Core->MMU 接続 (物理アドレス) ----- */
         // 命令
         input wire          MAIN_INST_RDEN,
         input wire  [31:0]  MAIN_INST_RIADDR,
