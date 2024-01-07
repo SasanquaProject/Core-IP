@@ -351,11 +351,12 @@ module main
     );
 
     /* ----- 5-1. 実行(rv32i:core) ----- */
-    wire        exec_allow, exec_valid, exec_reg_w_en, exec_mem_r_en, exec_mem_r_signed, exec_csr_w_en, exec_mem_w_en, exec_jmp_do, exec_exc_en;
+    wire        exec_allow, exec_valid, exec_reg_w_en, exec_mem_r_en, exec_mem_r_signed, exec_csr_w_en, exec_mem_w_en, exec_exc_en;
     wire [31:0] exec_pc, exec_reg_w_data, exec_csr_w_data, exec_mem_r_addr, exec_mem_w_addr, exec_mem_w_data, exec_jmp_pc;
     wire [11:0] exec_csr_w_addr;
     wire [4:0]  exec_reg_w_rd, exec_mem_r_rd;
     wire [3:0]  exec_mem_r_strb, exec_mem_w_strb, exec_exc_code;
+    wire [1:0]  exec_jmp_result;
 
     exec exec (
         // 制御
@@ -397,7 +398,7 @@ module main
         .EXEC_MEM_W_ADDR    (exec_mem_w_addr),
         .EXEC_MEM_W_STRB    (exec_mem_w_strb),
         .EXEC_MEM_W_DATA    (exec_mem_w_data),
-        .EXEC_JMP_DO        (exec_jmp_do),
+        .EXEC_JMP_RESULT    (exec_jmp_result),
         .EXEC_JMP_PC        (exec_jmp_pc),
         .EXEC_EXC_EN        (exec_exc_en),
         .EXEC_EXC_CODE      (exec_exc_code)
@@ -444,7 +445,7 @@ module main
         .MAIN_MEM_W_ADDR        (exec_mem_w_addr),
         .MAIN_MEM_W_STRB        (exec_mem_w_strb),
         .MAIN_MEM_W_DATA        (exec_mem_w_data),
-        .MAIN_JMP_DO            (exec_jmp_do),
+        .MAIN_JMP_DO            (exec_jmp_result[1]),
         .MAIN_JMP_PC            (exec_jmp_pc),
         .MAIN_EXC_EN            (exec_exc_en),
         .MAIN_EXC_CODE          (exec_exc_code),

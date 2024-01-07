@@ -48,7 +48,7 @@ wire [31:0] FETCH_INST              = sasanqua.core.main.fetch_inst;
 
 // Core: Decode
 wire [31:0] DECODE_PC               = sasanqua.core.main.decode_pc;
-wire [6:0]  DECODE_OPCODE           = sasanqua.core.main.decode_opcode;
+wire [16:0] DECODE_OPCODE           = sasanqua.core.main.decode_opcode;
 wire [4:0]  DECODE_RD               = sasanqua.core.main.decode_rd;
 wire [4:0]  DECODE_RS1              = sasanqua.core.main.decode_rs1;
 wire [4:0]  DECODE_RS2              = sasanqua.core.main.decode_rs2;
@@ -56,7 +56,7 @@ wire [31:0] DECODE_RINST            = sasanqua.core.main.decode_rinst;
 
 // Core: Pool
 wire [31:0] POOL_PC                 = sasanqua.core.main.pool_pc;
-wire [6:0]  POOL_OPCODE             = sasanqua.core.main.pool_opcode;
+wire [16:0] POOL_OPCODE             = sasanqua.core.main.pool_opcode;
 wire [4:0]  POOL_RD                 = sasanqua.core.main.pool_rd;
 wire [4:0]  POOL_RS1                = sasanqua.core.main.pool_rs1;
 wire [4:0]  POOL_RS2                = sasanqua.core.main.pool_rs2;
@@ -64,7 +64,7 @@ wire [31:0] POOL_RINST              = sasanqua.core.main.pool_rinst;
 
 // Core: Check
 wire [31:0] CHECK_PC                = sasanqua.core.main.check_pc;
-wire [6:0]  CHECK_OPCODE            = sasanqua.core.main.check_opcode;
+wire [16:0] CHECK_OPCODE            = sasanqua.core.main.check_opcode;
 wire [4:0]  CHECK_RD                = sasanqua.core.main.check_rd;
 wire [4:0]  CHECK_RS1               = sasanqua.core.main.check_rs1;
 wire [4:0]  CHECK_RS2               = sasanqua.core.main.check_rs2;
@@ -78,6 +78,7 @@ wire [1:0]  SCHEDULE_ALLOW          = {
 };
 
 wire [31:0] SCHEDULE_MAIN_PC        = sasanqua.core.main.schedule_main_pc;
+wire [16:0] SCHEDULE_MAIN_OPCODE    = sasanqua.core.main.schedule_main_opcode;
 wire [4:0]  SCHEDULE_MAIN_RD_ADDR   = sasanqua.core.main.schedule_main_rd;
 wire        SCHEDULE_MAIN_RS1_VALID = sasanqua.core.main.schedule_main_rs1_valid;
 wire [4:0]  SCHEDULE_MAIN_RS1_ADDR  = sasanqua.core.main.schedule_main_rs1;
@@ -118,8 +119,9 @@ wire        EXEC_MAIN_MEM_W_EN      = sasanqua.core.main.exec_mem_w_en;
 wire [31:0] EXEC_MAIN_MEM_W_ADDR    = sasanqua.core.main.exec_mem_w_addr;
 wire [3:0]  EXEC_MAIN_MEM_W_STRB    = sasanqua.core.main.exec_mem_w_strb;
 wire [31:0] EXEC_MAIN_MEM_W_DATA    = sasanqua.core.main.exec_mem_w_data;
-wire        EXEC_MAIN_JMP_DO        = sasanqua.core.main.exec_jmp_do;
+wire        EXEC_MAIN_JMP_DO        = sasanqua.core.main.exec_jmp_result[1];
 wire [31:0] EXEC_MAIN_JMP_PC        = sasanqua.core.main.exec_jmp_pc;
+wire        EXEC_MAIN_FENCE         = sasanqua.core.main.exec.EXEC_FENCE;
 wire        EXEC_MAIN_EXC_EN        = sasanqua.core.main.exec_exc_en;
 wire [3:0]  EXEC_MAIN_EXC_CODE      = sasanqua.core.main.exec_exc_code;
 

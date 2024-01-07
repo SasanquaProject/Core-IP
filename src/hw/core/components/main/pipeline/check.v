@@ -38,7 +38,7 @@ module check #
     always @ (posedge CLK) begin
         if (RST || FLUSH) begin
             pc <= 'b0;
-            opcode <= 'b0;
+            opcode <= { 7'b0010011, 3'b0, 7'b0 };
             rd <= 'b0;
             rs1 <= 'b0;
             rs2 <= 'b0;

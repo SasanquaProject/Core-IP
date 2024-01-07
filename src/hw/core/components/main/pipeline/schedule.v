@@ -60,7 +60,7 @@ module schedule #
         if (RST || FLUSH) begin
             main_accept <= 'b0;
             main_pc <= 'b0;
-            main_opcode <= 'b0;
+            main_opcode <= { 7'b0010011, 3'b0, 7'b0 };
             main_rd <= 'b0;
             main_rs1 <= 'b0;
             main_rs2 <= 'b0;

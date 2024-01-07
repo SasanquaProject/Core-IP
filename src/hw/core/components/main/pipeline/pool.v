@@ -36,7 +36,7 @@ module pool #
     always @ (posedge CLK) begin
         if (RST || FLUSH) begin
             pc <= 32'b0;
-            opcode <= 17'b0;
+            opcode <= { 7'b0010011, 3'b0, 7'b0 };
             rd <= 5'b0;
             rs1 <= 5'b0;
             rs2 <= 5'b0;

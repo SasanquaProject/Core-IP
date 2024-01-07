@@ -39,8 +39,9 @@ module exec
         output reg  [31:0]  EXEC_MEM_W_ADDR,
         output reg  [3:0]   EXEC_MEM_W_STRB,
         output reg  [31:0]  EXEC_MEM_W_DATA,
-        output reg          EXEC_JMP_DO,
+        output reg  [1:0]   EXEC_JMP_RESULT,
         output reg  [31:0]  EXEC_JMP_PC,
+        output reg          EXEC_FENCE,
         output reg          EXEC_EXC_EN,
         output reg  [3:0]   EXEC_EXC_CODE
     );
@@ -61,7 +62,7 @@ module exec
         if (RST || FLUSH) begin
             allow <= 1'b0;
             pc <= 32'b0;
-            opcode <= 17'b0;
+            opcode <= { 7'b0010011, 3'b0, 7'b0 };
             rd_addr <= 5'b0;
             rs1_addr <= 5'b0;
             rs1_data <= 32'b0;
@@ -77,7 +78,7 @@ module exec
         else if (STALL) begin
             allow <= 1'b0;
             pc <= 32'b0;
-            opcode <= 17'b0;
+            opcode <= { 7'b0010011, 3'b0, 7'b0 };
             rd_addr <= 5'b0;
             rs1_addr <= 5'b0;
             rs1_data <= 32'b0;
@@ -369,39 +370,39 @@ module exec
     always @* begin
         casez (opcode[16:7])
             10'b1100011_000: begin  // beq
-                EXEC_JMP_DO <= rs1_data == rs2_data;
+                EXEC_JMP_RESULT <= { rs1_data == rs2_data, rs1_data != rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100011_001: begin  // bne
-                EXEC_JMP_DO <= rs1_data != rs2_data;
+                EXEC_JMP_RESULT <= { rs1_data != rs2_data, rs1_data == rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100011_101: begin  // bge
-                EXEC_JMP_DO <= rs1_data_s >= rs2_data_s;
+                EXEC_JMP_RESULT <= { rs1_data_s >= rs2_data_s, rs1_data_s < rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100011_111: begin  // bgeu
-                EXEC_JMP_DO <= rs1_data >= rs2_data;
+                EXEC_JMP_RESULT <= { rs1_data >= rs2_data, rs1_data < rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100011_100: begin  // blt
-                EXEC_JMP_DO <= rs1_data_s < rs2_data_s;
+                EXEC_JMP_RESULT <= { rs1_data_s < rs2_data_s, rs1_data_s >= rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100011_110: begin  // bltu
-                EXEC_JMP_DO <= rs1_data < rs2_data;
+                EXEC_JMP_RESULT <= { rs1_data < rs2_data, rs1_data >= rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1101111_zzz: begin  // jal
-                EXEC_JMP_DO <= 1'b1;
+                EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
             10'b1100111_000: begin  // jalr
-                EXEC_JMP_DO <= 1'b1;
+                EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= (rs1_data + { { 20{ imm[11] } }, imm[11:0] }) & (~32'b1);
             end
             default: begin
-                EXEC_JMP_DO <= 1'b0;
+                EXEC_JMP_RESULT <= 2'b0;
                 EXEC_JMP_PC <= 32'b0;
             end
         endcase
@@ -448,26 +449,37 @@ module exec
         endcase
     end
 
+    // Fence 系
+    always @* begin
+        casez (opcode[16:7])
+            10'b0001111_000:       // fence
+                EXEC_FENCE <= 1'b1;
+            10'b0001111_001:       // fence.i
+                EXEC_FENCE <= 1'b1;
+            default:
+                EXEC_FENCE <= 1'b0;
+        endcase
+    end
+
     // 例外
     always @* begin
-        if (imm == 32'hffff_ffff) begin // Illegal instruction
-            EXEC_EXC_EN <= 1'b1;
-            EXEC_EXC_CODE <= 4'd2;
-        end
-        else if (opcode == 17'b1110011_000_0000000) begin // Environment break or call
+        // Environment break or call
+        if (opcode == 17'b1110011_000_0000000) begin
             EXEC_EXC_EN <= 1'b1;
             EXEC_EXC_CODE <= imm[11:0] == 12'b0 ? 4'd11 : 4'd3;
         end
+
+        // Illegal instruction
+        else if (!(EXEC_REG_W_EN || EXEC_MEM_R_EN || EXEC_MEM_W_EN || EXEC_JMP_RESULT || EXEC_CSR_W_EN || EXEC_FENCE)) begin
+            EXEC_EXC_EN <= 1'b1;
+            EXEC_EXC_CODE <= 4'd2;
+        end
+
+        // No exception
         else begin
             EXEC_EXC_EN <= 1'b0;
             EXEC_EXC_CODE <= 4'b0;
         end
     end
-
-    // その他
-    // always @* begin
-        // fence
-        // fence.i
-    // end
 
 endmodule
