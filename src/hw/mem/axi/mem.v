@@ -283,15 +283,8 @@ module mem_axi
     wire        axi_inst_bid, axi_inst_bvalid;
     wire        axi_inst_arvalid, axi_inst_arready, axi_inst_rid, axi_inst_rlast, axi_inst_rvalid;
 
-    wire        exists_inst_cache, inst_rvalid, dummy_wselect, dummy_wren;
-    wire [3:0]  dummy_wstrb;
-    wire [31:0] inst_roaddr, inst_rdata, dummy_waddr, dummy_wdata;
-
-    assign dummy_wselect = 1'b0;
-    assign dummy_wren    = 1'b0;
-    assign dummy_wstrb   = 4'b0;
-    assign dummy_waddr   = 32'b0;
-    assign dummy_wdata   = 32'b0;
+    wire        exists_inst_cache, inst_rvalid;
+    wire [31:0] inst_roaddr, inst_rdata;
 
     cache_axi # (
         .PAGES              (1),    // => SIZE: 4kb x 1
@@ -310,11 +303,11 @@ module mem_axi
         .ROADDR             (inst_roaddr),
         .RVALID             (inst_rvalid),
         .RDATA              (inst_rdata),
-        .WSELECT            (dummy_wselect),
-        .WREN               (dummy_wren),
-        .WSTRB              (dummy_wstrb),
-        .WADDR              (dummy_waddr),
-        .WDATA              (dummy_wdata),
+        .WSELECT            ('b0),
+        .WREN               ('b0),
+        .WSTRB              ('b0),
+        .WADDR              ('b0),
+        .WDATA              ('b0),
 
         // AXIバス
         .M_AXI_AWADDR       (axi_inst_awaddr),
