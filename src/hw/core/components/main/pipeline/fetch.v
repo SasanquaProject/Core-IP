@@ -55,7 +55,7 @@ module fetch
         end
     end
 
-    assign INST_RDEN    = !(FLUSH || STALL || MEM_WAIT);
+    assign INST_RDEN    = !(FLUSH || STALL);
     assign INST_RIADDR  = pc;
     assign FETCH_PC     = INST_RVALID ? INST_ROADDR : cache_pc;
     assign FETCH_INST   = INST_RVALID ? INST_RDATA : cache_inst;
