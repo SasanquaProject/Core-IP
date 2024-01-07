@@ -246,8 +246,8 @@ module mem_axi
     wire [9:0]  rom_inst_roaddr_10, rom_data_roaddr_10;
     wire        rom_inst_rvalid, rom_data_rvalid;
 
-    assign rom_inst_roaddr = { 20'b0, rom_inst_roaddr_10, 2'b0 };
-    assign rom_data_roaddr = { 20'b0, rom_data_roaddr_10, 2'b0 };
+    assign rom_inst_roaddr = { 22'b0, rom_inst_roaddr_10 };
+    assign rom_data_roaddr = { 22'b0, rom_data_roaddr_10 };
 
     rom_dualport # (
         .ADDR_WIDTH         (10),   // => SIZE: 1024
