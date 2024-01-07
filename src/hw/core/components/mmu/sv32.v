@@ -1,4 +1,4 @@
-module mmu
+module mmu_sv32
     (
         /* ----- 制御 ----- */
         input wire          CLK,
@@ -27,7 +27,7 @@ module mmu
         input wire  [31:0]  MEM_DATA_RDATA,
         output wire         MEM_DATA_WREN,
         output wire [3:0]   MEM_DATA_WSTRB,
-        output wire [31:0]  MEM_DATA_WADDR,
+        output wire [31:0]  MEM_DATA_
         output wire [31:0]  MEM_DATA_WDATA,
 
         // ハザード

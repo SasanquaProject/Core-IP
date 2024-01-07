@@ -1,4 +1,4 @@
-module mmu
+module mmu_bare
     (
         /* ----- 制御 ----- */
         input wire          CLK,

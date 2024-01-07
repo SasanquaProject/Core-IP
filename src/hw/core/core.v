@@ -65,7 +65,7 @@ module core
     /* ----- MMU ----- */
     wire mmu_wait;
 
-    mmu mmu (
+    mmu_sv32 mmu (
         // 制御
         .CLK                (CLK),
         .RST                (RST),
