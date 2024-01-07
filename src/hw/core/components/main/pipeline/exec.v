@@ -368,38 +368,42 @@ module exec
 
     // PC更新
     always @* begin
-        casez (opcode[16:7])
-            10'b1100011_000: begin  // beq
+        casez (opcode[16:0])
+            17'b1100011_000_zzzzzzz: begin  // beq
                 EXEC_JMP_RESULT <= { rs1_data == rs2_data, rs1_data != rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1100011_001: begin  // bne
+            17'b1100011_001_zzzzzzz: begin  // bne
                 EXEC_JMP_RESULT <= { rs1_data != rs2_data, rs1_data == rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1100011_101: begin  // bge
+            17'b1100011_101_zzzzzzz: begin  // bge
                 EXEC_JMP_RESULT <= { rs1_data_s >= rs2_data_s, rs1_data_s < rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1100011_111: begin  // bgeu
+            17'b1100011_111_zzzzzzz: begin  // bgeu
                 EXEC_JMP_RESULT <= { rs1_data >= rs2_data, rs1_data < rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1100011_100: begin  // blt
+            17'b1100011_100_zzzzzzz: begin  // blt
                 EXEC_JMP_RESULT <= { rs1_data_s < rs2_data_s, rs1_data_s >= rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1100011_110: begin  // bltu
+            17'b1100011_110_zzzzzzz: begin  // bltu
                 EXEC_JMP_RESULT <= { rs1_data < rs2_data, rs1_data >= rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            10'b1101111_zzz: begin  // jal
+            17'b1101111_zzz_zzzzzzz: begin  // jal
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= pc + { { 11{ imm[20] } }, imm[20:1], 1'b0 };
             end
-            10'b1100111_000: begin  // jalr
+            17'b1100111_000_zzzzzzz: begin  // jalr
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= (rs1_data + { { 20{ imm[11] } }, imm[11:0] }) & (~32'b1);
+            end
+            17'b1110011_000_0011000: begin  // mret
+                EXEC_JMP_RESULT <= { 1'b0, 1'b1 };
+                EXEC_JMP_PC <= 32'b0;
             end
             default: begin
                 EXEC_JMP_RESULT <= 2'b0;
