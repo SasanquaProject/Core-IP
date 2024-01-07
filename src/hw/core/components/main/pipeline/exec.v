@@ -395,7 +395,7 @@ module exec
             end
             10'b1101111_zzz: begin  // jal
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
-                EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
+                EXEC_JMP_PC <= pc + { { 11{ imm[20] } }, imm[20:1], 1'b0 };
             end
             10'b1100111_000: begin  // jalr
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
