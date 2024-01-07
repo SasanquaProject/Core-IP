@@ -29,7 +29,7 @@ module main
         output wire [31:0]              DATA_WDATA,
 
         // ハザード
-        input wire                      MEM_WAIT,
+        input wire                      MMU_WAIT,
 
         /* ----- 割り込み ----- */
         input wire                      INT_EN,
@@ -83,7 +83,7 @@ module main
         .FLUSH      (flush),
         .FLUSH_PC   (flush_pc),
         .STALL      (stall),
-        .MEM_WAIT   (MEM_WAIT),
+        .MMU_WAIT   (MMU_WAIT),
 
         // MMUとの接続
         .INST_RDEN  (INST_RDEN),
@@ -108,7 +108,7 @@ module main
         .RST            (RST),
         .FLUSH          (flush),
         .STALL          (stall),
-        .MEM_WAIT       (MEM_WAIT),
+        .MMU_WAIT       (MMU_WAIT),
 
         // 前段との接続
         .PC             (fetch_pc),
@@ -136,7 +136,7 @@ module main
         .RST            (RST),
         .FLUSH          (flush),
         .STALL          (stall),
-        .MEM_WAIT       (MEM_WAIT),
+        .MMU_WAIT       (MMU_WAIT),
 
         // 前段との接続
         .PC             (decode_pc),
@@ -170,7 +170,7 @@ module main
         .RST            (RST),
         .FLUSH          (flush),
         .STALL          (stall),
-        .MEM_WAIT       (MEM_WAIT),
+        .MMU_WAIT       (MMU_WAIT),
 
         // 前段との接続
         .PC             (pool_pc),
@@ -207,7 +207,7 @@ module main
         .RST            (RST),
         .FLUSH          (flush),
         .STALL          (stall),
-        .MEM_WAIT       (MEM_WAIT),
+        .MMU_WAIT       (MMU_WAIT),
 
         // 前段との接続
         .PC             (pool_pc),
@@ -239,7 +239,7 @@ module main
         .RST                    (RST),
         .FLUSH                  (flush),
         .STALL                  (stall),
-        .MEM_WAIT               (MEM_WAIT),
+        .MMU_WAIT               (MMU_WAIT),
 
         // 前段との接続
         .MAIN_ACCEPT            (check_accept),
@@ -284,7 +284,7 @@ module main
         .RST                (RST),
         .FLUSH              (flush),
         .STALL              (stall),
-        .MEM_WAIT           (MEM_WAIT),
+        .MMU_WAIT           (MMU_WAIT),
         .TRAP_EN            (trap_en),
         .TRAP_CODE          (trap_code),
         .TRAP_PC            (trap_pc),
@@ -322,7 +322,7 @@ module main
         .RST                (RST),
         .FLUSH              (flush),
         .STALL              (stall),
-        .MEM_WAIT           (MEM_WAIT),
+        .MMU_WAIT           (MMU_WAIT),
 
         // レジスタアクセス
         .A_RADDR            (check_rs1[4:0]),
@@ -363,7 +363,7 @@ module main
         .RST                (RST),
         .FLUSH              (flush),
         .STALL              (stall),
-        .MEM_WAIT           (MEM_WAIT),
+        .MMU_WAIT           (MMU_WAIT),
 
         // 前段との接続
         .ALLOW              (schedule_main_allow),
@@ -423,7 +423,7 @@ module main
         .CLK                    (CLK),
         .RST                    (RST),
         .FLUSH                  (flush),
-        .MEM_WAIT               (MEM_WAIT),
+        .MMU_WAIT               (MMU_WAIT),
 
         // 前段との接続
         .MAIN_ALLOW             (exec_allow),
@@ -493,7 +493,7 @@ module main
         .CLK                    (CLK),
         .RST                    (RST),
         .FLUSH                  (flush),
-        .MEM_WAIT               (MEM_WAIT),
+        .MMU_WAIT               (MMU_WAIT),
 
         // MMUとの接続
         .DATA_RDEN              (DATA_RDEN),
@@ -543,7 +543,7 @@ module main
         .CLK                (CLK),
         .RST                (RST),
         .FLUSH              (flush),
-        .MEM_WAIT           (MEM_WAIT),
+        .MMU_WAIT           (MMU_WAIT),
 
         // 割り込み
         .INT_ALLOW          (int_allow),

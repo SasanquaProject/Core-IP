@@ -99,7 +99,7 @@ module sasanqua
         core.main.flush,
         core.main.stall,
         core.main.INT_EN,
-        core.main.MEM_WAIT
+        core.main.MMU_WAIT
     };
 
     /* ----- Memory ----- */

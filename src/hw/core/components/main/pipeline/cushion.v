@@ -11,7 +11,7 @@ module cushion #
 
         // パイプライン
         input wire                      FLUSH,
-        input wire                      MEM_WAIT,
+        input wire                      MMU_WAIT,
 
         /* ----- 前段との接続 ----- */
         // Main
@@ -122,7 +122,7 @@ module cushion #
             cop_exc_en <= 'b0;
             cop_exc_code <= 'b0;
         end
-        else if (MEM_WAIT) begin
+        else if (MMU_WAIT) begin
             // do nothing
         end
         else begin

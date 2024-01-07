@@ -5,7 +5,7 @@ module exec
         input wire          RST,
         input wire          FLUSH,
         input wire          STALL,
-        input wire          MEM_WAIT,
+        input wire          MMU_WAIT,
 
         /* ----- 前段との接続 ----- */
         input wire          ALLOW,
@@ -71,7 +71,7 @@ module exec
             csr_data <= 32'b0;
             imm <= 32'b0;
         end
-        else if (MEM_WAIT) begin
+        else if (MMU_WAIT) begin
             // do nothing
         end
         else if (STALL) begin

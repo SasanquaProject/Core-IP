@@ -5,7 +5,7 @@ module reg_std_rv32i
         input wire          RST,
         input wire          FLUSH,
         input wire          STALL,
-        input wire          MEM_WAIT,
+        input wire          MMU_WAIT,
 
         /* ----- レジスタアクセス ----- */
         // 読み
@@ -72,7 +72,7 @@ module reg_std_rv32i
             fwd_cushion_data <= FWD_CUSHION_DATA;
             fwd_cushion_en <= FWD_CUSHION_EN;
         end
-        else if (MEM_WAIT) begin
+        else if (MMU_WAIT) begin
             // do nothing
         end
         else begin

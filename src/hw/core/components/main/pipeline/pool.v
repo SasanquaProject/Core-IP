@@ -9,7 +9,7 @@ module pool #
         input wire                   RST,
         input wire                   FLUSH,
         input wire                   STALL,
-        input wire                   MEM_WAIT,
+        input wire                   MMU_WAIT,
 
         /* ----- デコード部2との接続 ----- */
         input wire [31:0]            PC,
@@ -42,7 +42,7 @@ module pool #
             rs2 <= 5'b0;
             rinst <= 32'h0000_0013;
         end
-        else if (STALL || MEM_WAIT) begin
+        else if (STALL || MMU_WAIT) begin
             // do nothing
         end
         else begin

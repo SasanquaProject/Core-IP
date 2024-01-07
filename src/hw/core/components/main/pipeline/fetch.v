@@ -12,7 +12,7 @@ module fetch
         input wire          FLUSH,
         input wire  [31:0]  FLUSH_PC,
         input wire          STALL,
-        input wire          MEM_WAIT,
+        input wire          MMU_WAIT,
 
         /* ----- MMUとの接続 ----- */
         output wire         INST_RDEN,
@@ -34,7 +34,7 @@ module fetch
             pc <= START_ADDR;
         else if (FLUSH)
             pc <= FLUSH_PC;
-        else if (STALL || MEM_WAIT) begin
+        else if (STALL || MMU_WAIT) begin
             // do nothing
         end
         else

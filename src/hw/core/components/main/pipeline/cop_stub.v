@@ -9,7 +9,7 @@ module cop_stub #
         input wire                   RST,
         input wire                   FLUSH,
         input wire                   STALL,
-        input wire                   MEM_WAIT,
+        input wire                   MMU_WAIT,
 
         /* ----- 前段との接続 ----- */
         input wire  [(32*PNUMS-1):0] PC,
@@ -31,7 +31,7 @@ module cop_stub #
             COP_STUB_RS1 <= 'b0;
             COP_STUB_RS2 <= 'b0;
         end
-        else if (STALL || MEM_WAIT) begin
+        else if (STALL || MMU_WAIT) begin
             // do nothing
         end
         else begin

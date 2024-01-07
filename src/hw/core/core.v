@@ -137,7 +137,7 @@ module core
         .DATA_WSTRB         (data_wstrb),
         .DATA_WADDR         (data_waddr),
         .DATA_WDATA         (data_wdata),
-        .MEM_WAIT           (mmu_wait),
+        .MMU_WAIT           (mmu_wait),
 
         // 割り込み
         .INT_EN             (INT_EN),
