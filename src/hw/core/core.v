@@ -69,6 +69,8 @@ module core
         // 制御
         .CLK                (CLK),
         .RST                (RST),
+        // .SATP               ('h80080000),
+        .SATP               ('b0),
 
         // MMU->Mem 接続 (物理アドレス)
         .MEM_INST_RDEN      (INST_RDEN),

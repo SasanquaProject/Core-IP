@@ -21,6 +21,19 @@ wire [31:0] CLINT_MTIMECMP          = sasanqua.clint.mtimecmp[0];
 wire        CLINT_INT_EN            = sasanqua.clint.INT_EN;
 wire [3:0]  CLINT_INT_CODE          = sasanqua.clint.INT_CODE;
 
+// MMU
+wire        MMU_WAIT                = sasanqua.core.mmu.MMU_WAIT;
+wire [31:0] MMU_SATP                = sasanqua.core.mmu.SATP;
+wire [31:0] MMU_SATP_PPN            = { sasanqua.core.mmu.SATP[21:0], 10'b0 };
+wire        MMU_TRANS_INST_REQ      = sasanqua.core.mmu.translate_inst.REQ;
+wire [31:0] MMU_TRANS_INST_VADDR    = sasanqua.core.mmu.translate_inst.VADDR;
+wire        MMU_TRANS_INST_DONE     = sasanqua.core.mmu.translate_inst.DONE;
+wire [31:0] MMU_TRANS_INST_PADDR    = sasanqua.core.mmu.translate_inst.PADDR;
+wire        MMU_TRANS_DATA_REQ      = sasanqua.core.mmu.translate_data.REQ;
+wire [31:0] MMU_TRANS_DATA_VADDR    = sasanqua.core.mmu.translate_data.VADDR;
+wire        MMU_TRANS_DATA_DONE     = sasanqua.core.mmu.translate_data.DONE;
+wire [31:0] MMU_TRANS_DATA_VADDR    = sasanqua.core.mmu.translate_data.PADDR;
+
 // Core: Status
 wire        INT_ALLOW               = sasanqua.core.main.int_allow;
 
