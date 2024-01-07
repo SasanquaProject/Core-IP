@@ -1,7 +1,7 @@
 IMAGE := riscv/devenv
 
 setup: image
-	make -C bootrom
+	make -C src/bootrom
 	make -C tb/task/riscv_tests/resources
 
 image:
