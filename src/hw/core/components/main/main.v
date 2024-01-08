@@ -300,7 +300,7 @@ module main
         .TRAP_PC            (trap_pc),
         .TRAP_VEC_MODE      (trap_vec_mode),
         .TRAP_VEC_BASE      (trap_vec_base),
-        .CHMODE_TO          (chmode_do),
+        .CHMODE_DO          (chmode_do),
         .CHMODE_TO          (chmode_to),
         .INT_ALLOW          (int_allow),
 
@@ -554,12 +554,12 @@ module main
         .MEMR_JMP_PC            (memr_jmp_pc)
     );
 
-    /* ----- 7-2. Trap処理 ----- */
+    /* ----- 7-2. 特権処理 ----- */
     wire        trap_en, chmode_do;
     wire [1:0]  chmode_to;
     wire [31:0] trap_pc, trap_code, trap_jmp_to;
 
-    trap trap (
+    privilege privilege (
         // 制御
         .CLK                (CLK),
         .RST                (RST),

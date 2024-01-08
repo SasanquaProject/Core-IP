@@ -1,4 +1,4 @@
-module trap
+module privilege
     (
         /* ----- 制御 ----- */
         input wire          CLK,
