@@ -42,7 +42,7 @@ module exec
         output reg  [1:0]   EXEC_JMP_RESULT,
         output reg  [31:0]  EXEC_JMP_PC,
         output reg          EXEC_CHMODE_DO,
-        output reg  [1:0]   EXEC_CHMODE_TO,
+        output reg  [1:0]   EXEC_CHMODE_TRANS_TO,
         output reg          EXEC_FENCE,
         output reg          EXEC_EXC_EN,
         output reg  [3:0]   EXEC_EXC_CODE
@@ -410,19 +410,6 @@ module exec
         endcase
     end
 
-    always @* begin
-        casez (opcode[16:0])
-            17'b1110011_000_0011000: begin  // mret
-                EXEC_CHMODE_DO <= 1'b1;
-                EXEC_CHMODE_TO <= 2'b01;
-            end
-            default: begin
-                EXEC_CHMODE_DO <= 1'b0;
-                EXEC_CHMODE_TO <= 2'b00;
-            end
-        endcase
-    end
-
     // CSRs
     always @* begin
         casez (opcode[16:7])
@@ -476,7 +463,20 @@ module exec
         endcase
     end
 
-    // 例外
+    // 特権処理
+    always @* begin
+        casez (opcode[16:0])
+            17'b1110011_000_0011000: begin  // mret
+                EXEC_CHMODE_DO <= 1'b1;
+                EXEC_CHMODE_TRANS_TO <= 2'b01;
+            end
+            default: begin
+                EXEC_CHMODE_DO <= 1'b0;
+                EXEC_CHMODE_TRANS_TO <= 2'b00;
+            end
+        endcase
+    end
+
     always @* begin
         // Environment break or call
         if (opcode == 17'b1110011_000_0000000) begin

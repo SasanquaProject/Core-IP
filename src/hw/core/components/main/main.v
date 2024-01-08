@@ -68,12 +68,12 @@ module main
         if (RST)
             mode <= 2'b00;
         else if (chmode_do)
-            mode <= chmode_to;
+            mode <= chmode_trans_to;
     end
 
     /* ----- パイプライン制御 ----- */
     wire        flush    = trap_en || chmode_do || memr_jmp_do;
-    wire [31:0] flush_pc = trap_en ? trap_jmp_to : (chmode_do ? 32'b0 :  memr_jmp_pc);
+    wire [31:0] flush_pc = trap_en ? trap_jmp_to : (chmode_do ? chmode_jmp_to :  memr_jmp_pc);
     wire        stall    = !schedule_main_rs1_valid || !schedule_main_rs2_valid ||
                            !schedule_cop_rs1_valid || !schedule_cop_rs2_valid ||
                            !schedule_main_csr_valid ||
@@ -368,54 +368,54 @@ module main
     wire [11:0] exec_csr_w_addr;
     wire [4:0]  exec_reg_w_rd, exec_mem_r_rd;
     wire [3:0]  exec_mem_r_strb, exec_mem_w_strb, exec_exc_code;
-    wire [1:0]  exec_jmp_result, exec_chmode_to;
+    wire [1:0]  exec_jmp_result, exec_chmode_trans_to;
 
     exec exec (
         // 制御
-        .CLK                (CLK),
-        .RST                (RST),
-        .FLUSH              (flush),
-        .STALL              (stall),
-        .MMU_WAIT           (MMU_WAIT),
+        .CLK                    (CLK),
+        .RST                    (RST),
+        .FLUSH                  (flush),
+        .STALL                  (stall),
+        .MMU_WAIT               (MMU_WAIT),
 
         // 前段との接続
-        .ALLOW              (schedule_main_allow),
-        .PC                 (schedule_main_pc),
-        .OPCODE             (schedule_main_opcode),
-        .RD_ADDR            (schedule_main_rd),
-        .RS1_ADDR           (schedule_main_rs1),
-        .RS1_DATA           (schedule_main_rs1_data),
-        .RS2_ADDR           (schedule_main_rs2),
-        .RS2_DATA           (schedule_main_rs2_data),
-        .CSR_ADDR           (schedule_main_csr),
-        .CSR_DATA           (schedule_main_csr_data),
-        .IMM                (schedule_main_imm),
+        .ALLOW                  (schedule_main_allow),
+        .PC                     (schedule_main_pc),
+        .OPCODE                 (schedule_main_opcode),
+        .RD_ADDR                (schedule_main_rd),
+        .RS1_ADDR               (schedule_main_rs1),
+        .RS1_DATA               (schedule_main_rs1_data),
+        .RS2_ADDR               (schedule_main_rs2),
+        .RS2_DATA               (schedule_main_rs2_data),
+        .CSR_ADDR               (schedule_main_csr),
+        .CSR_DATA               (schedule_main_csr_data),
+        .IMM                    (schedule_main_imm),
 
         // 後段との接続
-        .EXEC_ALLOW         (exec_allow),
-        .EXEC_VALID         (exec_valid),
-        .EXEC_PC            (exec_pc),
-        .EXEC_REG_W_EN      (exec_reg_w_en),
-        .EXEC_REG_W_RD      (exec_reg_w_rd),
-        .EXEC_REG_W_DATA    (exec_reg_w_data),
-        .EXEC_CSR_W_EN      (exec_csr_w_en),
-        .EXEC_CSR_W_ADDR    (exec_csr_w_addr),
-        .EXEC_CSR_W_DATA    (exec_csr_w_data),
-        .EXEC_MEM_R_EN      (exec_mem_r_en),
-        .EXEC_MEM_R_RD      (exec_mem_r_rd),
-        .EXEC_MEM_R_ADDR    (exec_mem_r_addr),
-        .EXEC_MEM_R_STRB    (exec_mem_r_strb),
-        .EXEC_MEM_R_SIGNED  (exec_mem_r_signed),
-        .EXEC_MEM_W_EN      (exec_mem_w_en),
-        .EXEC_MEM_W_ADDR    (exec_mem_w_addr),
-        .EXEC_MEM_W_STRB    (exec_mem_w_strb),
-        .EXEC_MEM_W_DATA    (exec_mem_w_data),
-        .EXEC_JMP_RESULT    (exec_jmp_result),
-        .EXEC_JMP_PC        (exec_jmp_pc),
-        .EXEC_CHMODE_DO     (exec_chmode_do),
-        .EXEC_CHMODE_TO     (exec_chmode_to),
-        .EXEC_EXC_EN        (exec_exc_en),
-        .EXEC_EXC_CODE      (exec_exc_code)
+        .EXEC_ALLOW             (exec_allow),
+        .EXEC_VALID             (exec_valid),
+        .EXEC_PC                (exec_pc),
+        .EXEC_REG_W_EN          (exec_reg_w_en),
+        .EXEC_REG_W_RD          (exec_reg_w_rd),
+        .EXEC_REG_W_DATA        (exec_reg_w_data),
+        .EXEC_CSR_W_EN          (exec_csr_w_en),
+        .EXEC_CSR_W_ADDR        (exec_csr_w_addr),
+        .EXEC_CSR_W_DATA        (exec_csr_w_data),
+        .EXEC_MEM_R_EN          (exec_mem_r_en),
+        .EXEC_MEM_R_RD          (exec_mem_r_rd),
+        .EXEC_MEM_R_ADDR        (exec_mem_r_addr),
+        .EXEC_MEM_R_STRB        (exec_mem_r_strb),
+        .EXEC_MEM_R_SIGNED      (exec_mem_r_signed),
+        .EXEC_MEM_W_EN          (exec_mem_w_en),
+        .EXEC_MEM_W_ADDR        (exec_mem_w_addr),
+        .EXEC_MEM_W_STRB        (exec_mem_w_strb),
+        .EXEC_MEM_W_DATA        (exec_mem_w_data),
+        .EXEC_JMP_RESULT        (exec_jmp_result),
+        .EXEC_JMP_PC            (exec_jmp_pc),
+        .EXEC_CHMODE_DO         (exec_chmode_do),
+        .EXEC_CHMODE_TRANS_TO   (exec_chmode_trans_to),
+        .EXEC_EXC_EN            (exec_exc_en),
+        .EXEC_EXC_CODE          (exec_exc_code)
     );
 
     /* ----- 5-2. コプロセッサ(Exec) ----- */
@@ -430,7 +430,7 @@ module main
     wire [11:0] cushion_csr_w_addr;
     wire [4:0]  cushion_reg_w_rd, cushion_mem_r_rd;
     wire [3:0]  cushion_mem_r_strb, cushion_mem_w_strb, cushion_exc_code;
-    wire [1:0]  cushion_chmode_to;
+    wire [1:0]  cushion_chmode_trans_to;
 
     cushion # (
         .COP_NUMS               (COP_NUMS)
@@ -463,7 +463,7 @@ module main
         .MAIN_JMP_DO            (exec_jmp_result[1]),
         .MAIN_JMP_PC            (exec_jmp_pc),
         .MAIN_CHMODE_DO         (exec_chmode_do),
-        .MAIN_CHMODE_TO         (exec_chmode_to),
+        .MAIN_CHMODE_TRANS_TO   (exec_chmode_trans_to),
         .MAIN_EXC_EN            (exec_exc_en),
         .MAIN_EXC_CODE          (exec_exc_code),
         .COP_ALLOW              (COP_E_I_ALLOW),
@@ -496,7 +496,7 @@ module main
         .CUSHION_JMP_DO         (cushion_jmp_do),
         .CUSHION_JMP_PC         (cushion_jmp_pc),
         .CUSHION_CHMODE_DO      (cushion_chmode_do),
-        .CUSHION_CHMODE_TO      (cushion_chmode_to),
+        .CUSHION_CHMODE_TRANS_TO(cushion_chmode_trans_to),
         .CUSHION_EXC_EN         (cushion_exc_en),
         .CUSHION_EXC_CODE       (cushion_exc_code)
     );
@@ -556,44 +556,45 @@ module main
 
     /* ----- 7-2. 特権処理 ----- */
     wire        trap_en, chmode_do;
-    wire [1:0]  chmode_to;
-    wire [31:0] trap_pc, trap_code, trap_jmp_to;
+    wire [1:0]  chmode_trans_to;
+    wire [31:0] trap_pc, trap_code, trap_jmp_to, chmode_jmp_to;
 
     privilege privilege (
         // 制御
-        .CLK                (CLK),
-        .RST                (RST),
-        .FLUSH              (flush),
-        .MMU_WAIT           (MMU_WAIT),
+        .CLK                    (CLK),
+        .RST                    (RST),
+        .FLUSH                  (flush),
+        .MMU_WAIT               (MMU_WAIT),
 
         // 割り込み
-        .INT_ALLOW          (int_allow),
-        .INT_EN             (INT_EN),
-        .INT_CODE           (INT_CODE),
+        .INT_ALLOW              (int_allow),
+        .INT_EN                 (INT_EN),
+        .INT_CODE               (INT_CODE),
 
         // 前段との接続
-        .FETCH_PC           (fetch_pc),
-        .DECODE_PC          (decode_pc),
-        .CHECK_PC           (check_pc[31:0]),
-        .SCHEDULE_PC        (schedule_main_pc),
-        .EXEC_PC            (exec_pc),
-        .CUSHION_PC         (cushion_pc),
-        .CUSHION_CHMODE_DO  (cushion_chmode_do),
-        .CUSHION_CHMODE_TO  (cushion_chmode_to),
-        .CUSHION_EXC_EN     (cushion_exc_en),
-        .CUSHION_EXC_CODE   (cushion_exc_code),
+        .FETCH_PC               (fetch_pc),
+        .DECODE_PC              (decode_pc),
+        .CHECK_PC               (check_pc[31:0]),
+        .SCHEDULE_PC            (schedule_main_pc),
+        .EXEC_PC                (exec_pc),
+        .CUSHION_PC             (cushion_pc),
+        .CUSHION_CHMODE_DO      (cushion_chmode_do),
+        .CUSHION_CHMODE_TRANS_TO(cushion_chmode_trans_to),
+        .CUSHION_EXC_EN         (cushion_exc_en),
+        .CUSHION_EXC_CODE       (cushion_exc_code),
 
         // Trap情報
-        .TRAP_VEC_MODE      (trap_vec_mode),
-        .TRAP_VEC_BASE      (trap_vec_base),
-        .TRAP_PC            (trap_pc),
-        .TRAP_EN            (trap_en),
-        .TRAP_CODE          (trap_code),
-        .TRAP_JMP_TO        (trap_jmp_to),
+        .TRAP_VEC_MODE          (trap_vec_mode),
+        .TRAP_VEC_BASE          (trap_vec_base),
+        .TRAP_PC                (trap_pc),
+        .TRAP_EN                (trap_en),
+        .TRAP_CODE              (trap_code),
+        .TRAP_JMP_TO            (trap_jmp_to),
 
         // モード変更
-        .CHMODE_DO          (chmode_do),
-        .CHMODE_TO          (chmode_to)
+        .CHMODE_DO              (chmode_do),
+        .CHMODE_TRANS_TO        (chmode_trans_to),
+        .CHMODE_JMP_TO          (chmode_jmp_to)
     );
 
     /* ----- 8. メモリアクセス(w) ----- */
