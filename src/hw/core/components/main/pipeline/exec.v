@@ -41,6 +41,8 @@ module exec
         output reg  [31:0]  EXEC_MEM_W_DATA,
         output reg  [1:0]   EXEC_JMP_RESULT,
         output reg  [31:0]  EXEC_JMP_PC,
+        output reg          EXEC_CHMODE_DO,
+        output reg  [1:0]   EXEC_CHMODE_TO,
         output reg          EXEC_FENCE,
         output reg          EXEC_EXC_EN,
         output reg  [3:0]   EXEC_EXC_CODE
@@ -368,46 +370,55 @@ module exec
 
     // PC更新
     always @* begin
-        casez (opcode[16:0])
-            17'b1100011_000_zzzzzzz: begin  // beq
+        casez (opcode[16:7])
+            10'b1100011_000: begin  // beq
                 EXEC_JMP_RESULT <= { rs1_data == rs2_data, rs1_data != rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1100011_001_zzzzzzz: begin  // bne
+            10'b1100011_001: begin  // bne
                 EXEC_JMP_RESULT <= { rs1_data != rs2_data, rs1_data == rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1100011_101_zzzzzzz: begin  // bge
+            10'b1100011_101: begin  // bge
                 EXEC_JMP_RESULT <= { rs1_data_s >= rs2_data_s, rs1_data_s < rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1100011_111_zzzzzzz: begin  // bgeu
+            10'b1100011_111: begin  // bgeu
                 EXEC_JMP_RESULT <= { rs1_data >= rs2_data, rs1_data < rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1100011_100_zzzzzzz: begin  // blt
+            10'b1100011_100: begin  // blt
                 EXEC_JMP_RESULT <= { rs1_data_s < rs2_data_s, rs1_data_s >= rs2_data_s };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1100011_110_zzzzzzz: begin  // bltu
+            10'b1100011_110: begin  // bltu
                 EXEC_JMP_RESULT <= { rs1_data < rs2_data, rs1_data >= rs2_data };
                 EXEC_JMP_PC <= pc + { { 19{ imm[12] } }, imm[12:1], 1'b0 };
             end
-            17'b1101111_zzz_zzzzzzz: begin  // jal
+            10'b1101111_zzz: begin  // jal
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= pc + { { 11{ imm[20] } }, imm[20:1], 1'b0 };
             end
-            17'b1100111_000_zzzzzzz: begin  // jalr
+            10'b1100111_000: begin  // jalr
                 EXEC_JMP_RESULT <= { 1'b1, 1'b0 };
                 EXEC_JMP_PC <= (rs1_data + { { 20{ imm[11] } }, imm[11:0] }) & (~32'b1);
-            end
-            17'b1110011_000_0011000: begin  // mret
-                EXEC_JMP_RESULT <= { 1'b0, 1'b1 };
-                EXEC_JMP_PC <= 32'b0;
             end
             default: begin
                 EXEC_JMP_RESULT <= 2'b0;
                 EXEC_JMP_PC <= 32'b0;
+            end
+        endcase
+    end
+
+    always @* begin
+        casez (opcode[16:0])
+            17'b1110011_000_0011000: begin  // mret
+                EXEC_CHMODE_DO <= 1'b1;
+                EXEC_CHMODE_TO <= 2'b01;
+            end
+            default: begin
+                EXEC_CHMODE_DO <= 1'b0;
+                EXEC_CHMODE_TO <= 2'b00;
             end
         endcase
     end
@@ -474,7 +485,7 @@ module exec
         end
 
         // Illegal instruction
-        else if (!(EXEC_REG_W_EN || EXEC_MEM_R_EN || EXEC_MEM_W_EN || EXEC_JMP_RESULT || EXEC_CSR_W_EN || EXEC_FENCE)) begin
+        else if (!(EXEC_REG_W_EN || EXEC_MEM_R_EN || EXEC_MEM_W_EN || EXEC_JMP_RESULT || EXEC_CHMODE_DO || EXEC_CSR_W_EN || EXEC_FENCE)) begin
             EXEC_EXC_EN <= 1'b1;
             EXEC_EXC_CODE <= 4'd2;
         end

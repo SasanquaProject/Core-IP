@@ -35,6 +35,8 @@ module cushion #
         input wire  [31:0]              MAIN_MEM_W_DATA,
         input wire                      MAIN_JMP_DO,
         input wire  [31:0]              MAIN_JMP_PC,
+        input wire                      MAIN_CHMODE_DO,
+        input wire  [1:0]               MAIN_CHMODE_TO,
         input wire                      MAIN_EXC_EN,
         input wire  [3:0]               MAIN_EXC_CODE,
 
@@ -68,6 +70,8 @@ module cushion #
         output wire [31:0]              CUSHION_MEM_W_DATA,
         output wire                     CUSHION_JMP_DO,
         output wire [31:0]              CUSHION_JMP_PC,
+        output wire                     CUSHION_CHMODE_DO,
+        output wire [1:0]               CUSHION_CHMODE_TO,
         output wire                     CUSHION_EXC_EN,
         output wire [3:0]               CUSHION_EXC_CODE,
         output wire [31:0]              CUSHION_EXC_PC
@@ -77,11 +81,12 @@ module cushion #
     // A (main stream)
     reg                     main_allow, main_valid;
     reg                     main_reg_w_en, main_csr_w_en, main_mem_r_en, main_mem_r_signed, main_mem_w_en;
-    reg                     main_jmp_do, main_exc_en;
+    reg                     main_jmp_do, main_chmode_do, main_exc_en;
     reg [31:0]              main_pc, main_reg_w_data, main_csr_w_data, main_mem_r_addr, main_mem_w_addr, main_mem_w_data, main_jmp_pc;
     reg [11:0]              main_csr_w_addr;
     reg [4:0]               main_reg_w_rd, main_mem_r_rd;
     reg [3:0]               main_mem_r_strb, main_mem_w_strb, main_exc_code;
+    reg [1:0]               main_chmode_to;
 
     // B (cop)
     reg [( 1*COP_NUMS-1):0] cop_allow, cop_valid, cop_reg_w_en, cop_exc_en;
@@ -111,6 +116,8 @@ module cushion #
             main_mem_w_data <= 32'b0;
             main_jmp_do <= 1'b0;
             main_jmp_pc <= 32'b0;
+            main_chmode_do <= 1'b0;
+            main_chmode_to <= 2'b0;
             main_exc_en <= 1'b0;
             main_exc_code <= 4'b0;
             cop_allow <= 'b0;
@@ -146,6 +153,8 @@ module cushion #
             main_mem_w_data <= MAIN_MEM_W_DATA;
             main_jmp_do <= MAIN_JMP_DO;
             main_jmp_pc <= MAIN_JMP_PC;
+            main_chmode_do <= MAIN_CHMODE_DO;
+            main_chmode_to <= MAIN_CHMODE_TO;
             main_exc_en <= MAIN_EXC_EN;
             main_exc_code <= MAIN_EXC_CODE;
             cop_allow <= COP_ALLOW;
@@ -196,6 +205,8 @@ module cushion #
     assign CUSHION_MEM_W_DATA    = ok ? main_mem_w_data : 32'b0;
     assign CUSHION_JMP_DO        = ok ? main_jmp_do : 1'b0;
     assign CUSHION_JMP_PC        = ok ? main_jmp_pc : 32'b0;
+    assign CUSHION_CHMODE_DO     = ok ? main_chmode_do : 1'b0;
+    assign CUSHION_CHMODE_TO     = ok ? main_chmode_to : 2'b0;
     assign CUSHION_EXC_EN        = ok ? merge_exc_en : 1'b0;
     assign CUSHION_EXC_CODE      = ok ? merge_exc_code : 4'b0;
 

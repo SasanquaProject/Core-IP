@@ -35,6 +35,7 @@ wire        MMU_TRANS_DATA_DONE     = sasanqua.core.mmu.translate_data.DONE;
 wire [31:0] MMU_TRANS_DATA_VADDR    = sasanqua.core.mmu.translate_data.PADDR;
 
 // Core: Status
+wire [1:0]  MODE                    = sasanqua.core.main.mode;
 wire        INT_ALLOW               = sasanqua.core.main.int_allow;
 
 // Core: Pipeline
@@ -121,6 +122,8 @@ wire [3:0]  EXEC_MAIN_MEM_W_STRB    = sasanqua.core.main.exec_mem_w_strb;
 wire [31:0] EXEC_MAIN_MEM_W_DATA    = sasanqua.core.main.exec_mem_w_data;
 wire        EXEC_MAIN_JMP_DO        = sasanqua.core.main.exec_jmp_result[1];
 wire [31:0] EXEC_MAIN_JMP_PC        = sasanqua.core.main.exec_jmp_pc;
+wire        EXEC_MAIN_CHMODE_DO     = sasanqua.core.main.exec_chmode_do;
+wire [1:0]  EXEC_MAIN_CHMODE_TO     = sasanqua.core.main.exec_chmode_to;
 wire        EXEC_MAIN_FENCE         = sasanqua.core.main.exec.EXEC_FENCE;
 wire        EXEC_MAIN_EXC_EN        = sasanqua.core.main.exec_exc_en;
 wire [3:0]  EXEC_MAIN_EXC_CODE      = sasanqua.core.main.exec_exc_code;
@@ -151,6 +154,8 @@ wire [3:0]  CUSHION_MEM_W_STRB      = sasanqua.core.main.cushion_mem_w_strb;
 wire [31:0] CUSHION_MEM_W_DATA      = sasanqua.core.main.cushion_mem_w_data;
 wire        CUSHION_JMP_DO          = sasanqua.core.main.cushion_jmp_do;
 wire [31:0] CUSHION_JMP_PC          = sasanqua.core.main.cushion_jmp_pc;
+wire        CUSHION_CHMODE_DO       = sasanqua.core.main.cushion_chmode_do;
+wire [31:0] CUSHION_CHMODE_TO       = sasanqua.core.main.cushion_chmode_to;
 wire        CUSHION_EXC_EN          = sasanqua.core.main.cushion_exc_en;
 wire [3:0]  CUSHION_EXC_CODE        = sasanqua.core.main.cushion_exc_code;
 
@@ -169,6 +174,8 @@ wire [31:0] MEMR_JMP_PC             = sasanqua.core.main.memr_jmp_pc;
 wire [31:0] TRAP_PC                 = sasanqua.core.main.trap_pc;
 wire        TRAP_EN                 = sasanqua.core.main.trap_en;
 wire [31:0] TRAP_CODE               = sasanqua.core.main.trap_code;
+wire        CHMODE_DO               = sasanqua.core.main.chmode_do;
+wire [1:0]  CHMODE_TO               = sasanqua.core.main.chmode_to;
 
 // Register: rv32i
 wire [31:0] I_REG_0                 = sasanqua.core.main.reg_std_rv32i_0.registers[0];

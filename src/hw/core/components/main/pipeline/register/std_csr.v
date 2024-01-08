@@ -17,6 +17,10 @@ module reg_std_csr
         output wire [1:0]   TRAP_VEC_MODE,
         output wire [31:0]  TRAP_VEC_BASE,
 
+        // モード変更
+        input wire          CHMODE_DO,
+        input wire  [1:0]   CHMODE_TO,
+
         // 割り込み
         output wire         INT_ALLOW,
 
@@ -138,6 +142,9 @@ module reg_std_csr
             mstatus <= { 24'b0, mstatus[3], 7'b0 };
             mcause <= TRAP_CODE;
             mepc <= TRAP_PC;
+        end
+        else if (CHMODE_DO) begin
+            // TODO
         end
         else begin
             case (WADDR)
